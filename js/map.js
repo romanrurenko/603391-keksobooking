@@ -157,14 +157,14 @@ var insertFeatures = function (arrayFeatures) {
 
 // вносим Pin-ы в шаблон
 var generatePins = function (i, template, element) {
-  var element = adverts[i];
-  var pinsBlock = template.querySelector('.map__pin');
-  var pinImage = template.querySelector('.map__pin').querySelector('img');
+  element = adverts[i];
+  var buttonBlock = template.querySelector('.map__pin');
+  var pinImage = template.querySelector('.map__pin img');
   var width = pinImage.width;
   var height = pinImage.height;
   var pinX = element.location.x - (width / 2);
   var pinY = element.location.y - height;
-  pinsBlock.style = 'left: ' + pinX + 'px; top: ' + pinY + 'px;';
+  buttonBlock.style = 'left: ' + pinX + 'px; top: ' + pinY + 'px;';
   pinImage.src = element.author.avatar;
   pinImage.alt = element.offer.title;
 };
@@ -189,7 +189,6 @@ var generatePopup = function (i, template) {
 // заполняем массив в соответствии с ТЗ
 var fillAdverts = function () {
   for (var i = 0; i < adverts.length; i++) {
-    var advert = adverts[i];
     var copyTemplate = templateContainer.cloneNode(true);
     generatePopup(i, copyTemplate);
     generatePins(i, copyTemplate);
