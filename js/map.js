@@ -34,12 +34,11 @@ var contains = function (array, element) {
   return array.indexOf(element) !== -1;
 };
 
-// заполнить архив, неповторяющимися элементами из архива sourceArray
-// где resultLenght - кол-во элементов нового архива, valueRange - кол-во вариантов от 0.
-var fillArrayNoRepeat = function (sourceArray, resultLenght, maxRandomIndex) {
+// заполнить архив, неповторяющимися элементами из архива
+var fillArrayNoRepeat = function (sourceArray, resultLength, maxRandomIndex) {
   var newArray = [];
   var i = 0;
-  while (i < resultLenght) {
+  while (i < resultLength) {
     var randomValue = getRandomInRange(0, maxRandomIndex);
     var element = sourceArray[randomValue];
     if (!contains(newArray, element)) {
@@ -66,14 +65,14 @@ var generateRandomAdvert = function (advertCount) {
   var advertArray = [];
   var avatars = setAvatars(advertCount);
   shuffleArray(avatars);
-
+  shuffleArray(advertTitles);
   for (var i = 0; i < advertCount; i++) {
     var advertConfig = {
       author: {
         avatar: avatars[i]
       },
       offer: {
-        title: advertTitles[getRandomInRange(0, 7)],
+        title: advertTitles[i],
         address: '',
         price: getRandomInRange(1000, 1000000),
         type: advertTypes[getRandomInRange(0, 3)],
@@ -123,7 +122,7 @@ var switchTypeRealty = function (typeRealty) {
   }
 };
 
-// вставить элементы из arrayPhotos в DocumentFragment в соответствии с шаблоном
+// помещаем элементы из массива в DocumentFragment в соответствии с шаблоном
 var insertPhotos = function (arrayPhotos) {
   var templatePhoto = document.querySelector('template').content.querySelector('.popup__photo');
   var emptyFragment = document.createDocumentFragment();
@@ -135,7 +134,7 @@ var insertPhotos = function (arrayPhotos) {
   return emptyFragment;
 };
 
-// удалить дочерние элементы узла DOM c классом className
+// удалить дочерние элементы узла DOM c данным классом
 var deleteElements = function (className, copyTemplate) {
   var container = copyTemplate.querySelector(className);
   while (container.firstChild) {
@@ -144,7 +143,7 @@ var deleteElements = function (className, copyTemplate) {
   return copyTemplate;
 };
 
-//  вставить элементы из arrayFeatures в DocumentFragment в соответствии с шаблоном
+//  помещаем элементы из массива в DocumentFragment в соответствии с шаблоном
 var insertFeatures = function (arrayFeatures) {
   var emptyFragment = document.createDocumentFragment();
   for (var i = 0; i < arrayFeatures.length; i++) {
@@ -158,18 +157,21 @@ var insertFeatures = function (arrayFeatures) {
 
 // вносим Pin-ы в шаблон
 var generatePins = function (i, template, element) {
+  var element = adverts[i];
   var pinsBlock = template.querySelector('.map__pin');
-  var width = pinsBlock.querySelector('img').width;
-  var height = pinsBlock.querySelector('img').height;
+  var pinImage = template.querySelector('.map__pin').querySelector('img');
+  var width = pinImage.width;
+  var height = pinImage.height;
   var pinX = element.location.x - (width / 2);
   var pinY = element.location.y - height;
   pinsBlock.style = 'left: ' + pinX + 'px; top: ' + pinY + 'px;';
-  pinsBlock.querySelector('img').src = element.author.avatar;
-  pinsBlock.querySelector('img').alt = element.offer.title;
+  pinImage.src = element.author.avatar;
+  pinImage.alt = element.offer.title;
 };
 
 // вносим основные данные в шаблон
-var generatePopup = function (i, template, element) {
+var generatePopup = function (i, template) {
+  var element = adverts[i];
   template.querySelector('.popup__avatar').src = element.author.avatar;
   template.querySelector('.popup__title').textContent = element.offer.title;
   template.querySelector('.popup__text--address').textContent = element.offer.address;
@@ -184,23 +186,23 @@ var generatePopup = function (i, template, element) {
   template.querySelector('.popup__photos').appendChild(insertPhotos(element.offer.photos));
 };
 
-// заполнить Adverts в соответствии ТЗ
+// заполняем массив в соответствии с ТЗ
 var fillAdverts = function () {
   for (var i = 0; i < adverts.length; i++) {
     var advert = adverts[i];
     var copyTemplate = templateContainer.cloneNode(true);
-    generatePopup(i, copyTemplate, advert);
-    generatePins(i, copyTemplate, advert);
+    generatePopup(i, copyTemplate);
+    generatePins(i, copyTemplate);
     newEmptyFragment.appendChild(copyTemplate);
   }
   destinationTag.appendChild(newEmptyFragment);
 };
 
 // начало
-// заполняем объект из массива тестовых данных, в количестве ADVERT_COUNT
+// заполняем объект из массива тестовых данных, в необходимом количестве
 var adverts = generateRandomAdvert(ADVERT_COUNT);
 
-// У блока .map убераем класс .map--faded.
+// У блока убераем класс
 deleteClassFromBlock('.map', 'map--faded');
 
 // находим DOM узел куда будем вставлять объявления
