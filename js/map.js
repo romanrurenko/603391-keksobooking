@@ -124,14 +124,14 @@ var switchTypeRealty = function (typeRealty) {
 
 // помещаем элементы из массива в DocumentFragment в соответствии с шаблоном
 var insertPhotos = function (arrayPhotos) {
-  var templatePhoto = document.querySelector('template').content.querySelector('.popup__photo');
-  var emptyFragment = document.createDocumentFragment();
+  var templatePhoto = templateContainer.querySelector('.popup__photo');
+  var fragment = document.createDocumentFragment();
   for (var i = 0; i < arrayPhotos.length; i++) {
     var fragmentPhotos = templatePhoto.cloneNode(true);
     fragmentPhotos.src = arrayPhotos[i];
-    emptyFragment.append(fragmentPhotos);
+    fragment.append(fragmentPhotos);
   }
-  return emptyFragment;
+  return fragment;
 };
 
 // удалить дочерние элементы узла DOM c данным классом
@@ -145,73 +145,126 @@ var deleteElements = function (className, copyTemplate) {
 
 //  помещаем элементы из массива в DocumentFragment в соответствии с шаблоном
 var insertFeatures = function (arrayFeatures) {
-  var emptyFragment = document.createDocumentFragment();
+  var fragment = document.createDocumentFragment();
   for (var i = 0; i < arrayFeatures.length; i++) {
     var element = document.createElement('li');
     element.classList.add('popup__feature');
     element.classList.add('popup__feature--' + arrayFeatures[i]);
-    emptyFragment.appendChild(element);
+    fragment.appendChild(element);
   }
-  return emptyFragment;
+  return fragment;
 };
 
 // вносим Pin-ы в шаблон
-var generatePins = function (i, template, element) {
-  element = adverts[i];
-  var buttonBlock = template.querySelector('.map__pin');
+var generatePins = function (i, template) {
+  var element = adverts[i];
   var pinImage = template.querySelector('.map__pin img');
   var width = pinImage.width;
   var height = pinImage.height;
   var pinX = element.location.x - (width / 2);
   var pinY = element.location.y - height;
-  buttonBlock.style = 'left: ' + pinX + 'px; top: ' + pinY + 'px;';
+  template.style = 'left: ' + pinX + 'px; top: ' + pinY + 'px;';
+  template.setAttribute('id', 'button' + i);
+  pinImage.setAttribute('data-pinid', i);
   pinImage.src = element.author.avatar;
   pinImage.alt = element.offer.title;
 };
 
-// вносим основные данные в шаблон
-var generatePopup = function (i, template) {
-  var element = adverts[i];
-  template.querySelector('.popup__avatar').src = element.author.avatar;
-  template.querySelector('.popup__title').textContent = element.offer.title;
-  template.querySelector('.popup__text--address').textContent = element.offer.address;
-  template.querySelector('.popup__text--price').textContent = element.offer.price + '₽/ночь';
-  template.querySelector('.popup__type').textContent = switchTypeRealty(element.offer.type);
+var deleteOldPopup = function () {
+  var oldPopup = document.querySelector('.map.popup');
+  if (oldPopup) {
+    document.querySelector('.map.popup').remove();
+  }
+};
+
+// создаем popup на основании шаблона
+var renderPopup = function (pin) {
+  deleteOldPopup();
+  var fragment = document.createDocumentFragment();
+  var popupTemplate = templateContainer.querySelector('.popup').cloneNode(true);
+  fragment.appendChild(popupTemplate);
+  var element = adverts[pin];
+  fragment.querySelector('.popup__avatar').src = element.author.avatar;
+  fragment.querySelector('.popup__title').textContent = element.offer.title;
+  fragment.querySelector('.popup__text--address').textContent = element.offer.address;
+  fragment.querySelector('.popup__text--price').textContent = element.offer.price + '₽/ночь';
+  fragment.querySelector('.popup__type').textContent = switchTypeRealty(element.offer.type);
   var textCapacity = element.offer.rooms + ' комнаты для ' + element.offer.guests + ' гостей';
-  template.querySelector('.popup__text--capacity').textContent = textCapacity;
-  deleteElements('.popup__features', template);
-  template.querySelector('.popup__features').appendChild(insertFeatures(element.offer.features));
-  template.querySelector('.popup__description').textContent = element.offer.description;
-  deleteElements('.popup__photos', template);
-  template.querySelector('.popup__photos').appendChild(insertPhotos(element.offer.photos));
+  fragment.querySelector('.popup__text--capacity').textContent = textCapacity;
+  deleteElements('.popup__features', fragment);
+  fragment.querySelector('.popup__features').appendChild(insertFeatures(element.offer.features));
+  fragment.querySelector('.popup__description').textContent = element.offer.description;
+  deleteElements('.popup__photos', fragment);
+  fragment.querySelector('.popup__photos').appendChild(insertPhotos(element.offer.photos));
+  destinationNode.append(fragment);
 };
 
 // заполняем массив в соответствии с ТЗ
-var fillAdverts = function () {
+var renderPins = function () {
+  var fragment = document.createDocumentFragment();
   for (var i = 0; i < adverts.length; i++) {
-    var copyTemplate = templateContainer.cloneNode(true);
-    generatePopup(i, copyTemplate);
+    var copyTemplate = templateContainer.querySelector('.map__pin').cloneNode(true);
     generatePins(i, copyTemplate);
-    newEmptyFragment.appendChild(copyTemplate);
+    fragment.appendChild(copyTemplate);
   }
-  destinationTag.appendChild(newEmptyFragment);
+  destinationNode.appendChild(fragment);
+};
+
+var addAttributeAll = function (nodeSelector, newAttribute) {
+  var elements = document.querySelectorAll(nodeSelector);
+  for (var i = 0; i < elements.length; i++) {
+    elements[i].setAttribute(newAttribute, '');
+  }
+};
+
+var deleteAttributeAll = function (nodeSelector, selectedAttribute) {
+  var elements = document.querySelectorAll(nodeSelector);
+  for (var i = 0; i < elements.length; i++) {
+    elements[i].removeAttribute(selectedAttribute);
+  }
+};
+
+var getAdressElement = function (className) {
+  var selectedElement = document.querySelector(className);
+  var width = selectedElement.offsetWidth;
+  var height = selectedElement.offsetHeight;
+  var pinX = selectedElement.offsetLeft + Math.round(width / 2);
+  var pinY = selectedElement.offsetTop + Math.round(height / 2);
+  return pinX + ', ' + pinY;
+};
+
+var buttonClickHandler = function (evt) {
+  var pinId = evt.target.dataset.pinid;
+  if (pinId) {
+    renderPopup(pinId);
+  }
+};
+
+var pinMouseUpHandle = function () {
+  deleteClassFromBlock('.map', 'map--faded');
+  deleteClassFromBlock('.ad-form', 'ad-form--disabled');
+  var adress = document.querySelector('#address');
+  adress.setAttribute('value', getAdressElement('.map__pin--main'));
+  deleteAttributeAll('fieldset', 'disabled');
+  // заполнить Adverts в соответствии c заданием
+  renderPins();
+  document.addEventListener('click', buttonClickHandler);
 };
 
 // начало
-// заполняем объект из массива тестовых данных, в необходимом количестве
+// заполняем объект из массива тестовых данных
 var adverts = generateRandomAdvert(ADVERT_COUNT);
 
-// У блока убераем класс
-deleteClassFromBlock('.map', 'map--faded');
-
 // находим DOM узел куда будем вставлять объявления
-var destinationTag = document.querySelector('.map');
+var destinationNode = document.querySelector('.map');
 
 // определяем узел с шаблоном template
 var templateContainer = document.querySelector('template').content;
 
-// создаем пустой фрагмент
-var newEmptyFragment = document.createDocumentFragment();
+// блокируем поля ввода
+addAttributeAll('fieldset', 'disabled');
 
-// заполнить Adverts в соответствии c заданием
-fillAdverts();
+var mapPin = document.querySelector('.map__pin--main');
+mapPin.addEventListener('mouseup', pinMouseUpHandle);
+
+
