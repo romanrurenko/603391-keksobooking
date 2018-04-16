@@ -164,7 +164,6 @@ var generatePins = function (i, template) {
   var pinX = element.location.x - (width / 2);
   var pinY = element.location.y - height;
   template.style = 'left: ' + pinX + 'px; top: ' + pinY + 'px;';
-  template.setAttribute('id', 'button' + i);
   template.setAttribute('data-pinid', i);
   pinImage.setAttribute('data-pinid', i);
   pinImage.src = element.author.avatar;
@@ -189,7 +188,7 @@ var renderPopup = function (advertNumber) {
   fragment.querySelector('.popup__title').textContent = element.offer.title;
   fragment.querySelector('.popup__text--address').textContent = element.offer.address;
   fragment.querySelector('.popup__text--price').textContent = element.offer.price + '₽/ночь';
-  fragment. querySelector('.popup__type').textContent = switchTypeRealty(element.offer.type);
+  fragment.querySelector('.popup__type').textContent = switchTypeRealty(element.offer.type);
   var textCapacity = element.offer.rooms + ' комнаты для ' + element.offer.guests + ' гостей';
   fragment.querySelector('.popup__text--capacity').textContent = textCapacity;
   deleteElements('.popup__features', fragment);
@@ -267,5 +266,3 @@ addAttributeAll('fieldset', 'disabled');
 
 var mapPin = document.querySelector('.map__pin--main');
 mapPin.addEventListener('mouseup', pinMouseUpHandle);
-
-
