@@ -165,6 +165,7 @@ var generatePins = function (i, template) {
   var pinY = element.location.y - height;
   template.style = 'left: ' + pinX + 'px; top: ' + pinY + 'px;';
   template.setAttribute('id', 'button' + i);
+  template.setAttribute('data-pinid', i);
   pinImage.setAttribute('data-pinid', i);
   pinImage.src = element.author.avatar;
   pinImage.alt = element.offer.title;
@@ -178,17 +179,17 @@ var deleteOldPopup = function () {
 };
 
 // создаем popup на основании шаблона
-var renderPopup = function (pin) {
+var renderPopup = function (advertNumber) {
   deleteOldPopup();
   var fragment = document.createDocumentFragment();
   var popupTemplate = templateContainer.querySelector('.popup').cloneNode(true);
   fragment.appendChild(popupTemplate);
-  var element = adverts[pin];
+  var element = adverts[advertNumber];
   fragment.querySelector('.popup__avatar').src = element.author.avatar;
   fragment.querySelector('.popup__title').textContent = element.offer.title;
   fragment.querySelector('.popup__text--address').textContent = element.offer.address;
   fragment.querySelector('.popup__text--price').textContent = element.offer.price + '₽/ночь';
-  fragment.querySelector('.popup__type').textContent = switchTypeRealty(element.offer.type);
+  fragment. querySelector('.popup__type').textContent = switchTypeRealty(element.offer.type);
   var textCapacity = element.offer.rooms + ' комнаты для ' + element.offer.guests + ' гостей';
   fragment.querySelector('.popup__text--capacity').textContent = textCapacity;
   deleteElements('.popup__features', fragment);
@@ -224,7 +225,7 @@ var deleteAttributeAll = function (nodeSelector, selectedAttribute) {
   }
 };
 
-var getAdressElement = function (className) {
+var getAddressElement = function (className) {
   var selectedElement = document.querySelector(className);
   var width = selectedElement.offsetWidth;
   var height = selectedElement.offsetHeight;
@@ -243,12 +244,12 @@ var buttonClickHandler = function (evt) {
 var pinMouseUpHandle = function () {
   deleteClassFromBlock('.map', 'map--faded');
   deleteClassFromBlock('.ad-form', 'ad-form--disabled');
-  var adress = document.querySelector('#address');
-  adress.setAttribute('value', getAdressElement('.map__pin--main'));
+  var address = document.querySelector('#address');
+  address.setAttribute('value', getAddressElement('.map__pin--main'));
   deleteAttributeAll('fieldset', 'disabled');
-  // заполнить Adverts в соответствии c заданием
+  // заполним объект adverts
   renderPins();
-  document.addEventListener('click', buttonClickHandler);
+  destinationNode.addEventListener('click', buttonClickHandler);
 };
 
 // начало
