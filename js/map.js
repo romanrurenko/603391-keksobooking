@@ -3,7 +3,6 @@
 // задаем количество объявлений
 var ADVERT_COUNT = 8;
 var ESC_KEYCODE = 27;
-var ENTER_KEYCODE = 13;
 
 // массивы тестовых данных
 var advertTitles = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец',
@@ -26,7 +25,7 @@ var deleteClassFromBlock = function (elementSelector, removedClass) {
 };
 
 // добавить класс блоку
-var setClassToBlock = function (elementSelector, newClass) {
+var addClassToBlock = function (elementSelector, newClass) {
   var pageBlock = document.querySelector(elementSelector);
   if (pageBlock) {
     pageBlock.classList.add(newClass);
@@ -183,17 +182,17 @@ var generatePins = function (i, template) {
 };
 
 // удаляем окно popup
-var clearPopup = function () {
+var deletePopup = function () {
   var oldPopup = document.querySelector('article.map__card');
   if (oldPopup) {
     oldPopup.remove();
-    destinationNode.removeEventListener('keydown', onPopupEscPress);
+    destinationNode.removeEventListener('keydown', escPressHandler);
   }
 };
 
 // создаем popup на основании шаблона
 var renderPopup = function (advertNumber) {
-  clearPopup();
+  deletePopup();
   var fragment = document.createDocumentFragment();
   var popupTemplate = templateContainer.querySelector('.popup').cloneNode(true);
   fragment.appendChild(popupTemplate);
@@ -213,7 +212,7 @@ var renderPopup = function (advertNumber) {
   destinationNode.append(fragment);
 };
 
-// заполняем массив в соответствии с ТЗ
+// выводим пины на карту
 var renderPins = function () {
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < adverts.length; i++) {
@@ -224,11 +223,10 @@ var renderPins = function () {
   destinationNode.appendChild(fragment);
 };
 
-// заполняем массив в соответствии с ТЗ
-var clearPins = function () {
+// удаляем пины
+var deletePins = function () {
   var elements = document.querySelectorAll('.map button');
   for (var i = 0; i < elements.length; i++) {
-
     if (!elements[i].classList.contains('map__pin--main')) {
       elements[i].remove();
     }
@@ -243,7 +241,7 @@ var setAttributeAll = function (nodeSelector, newAttribute) {
   }
 };
 
-// убрать атрибут у всех элементам блока
+// убрать атрибут у всех элементов блока
 var deleteAttributeAll = function (nodeSelector, selectedAttribute) {
   var elements = document.querySelectorAll(nodeSelector);
   for (var i = 0; i < elements.length; i++) {
@@ -251,7 +249,7 @@ var deleteAttributeAll = function (nodeSelector, selectedAttribute) {
   }
 };
 
-// установить поле адреса
+// получаем адрес метки
 var getAddressElement = function (className) {
   var selectedElement = document.querySelector(className);
   var width = selectedElement.offsetWidth;
@@ -261,10 +259,10 @@ var getAddressElement = function (className) {
   return pinX + ', ' + pinY;
 };
 
-var onPopupEscPress = function (evt) {
+var escPressHandler = function (evt) {
   if (evt.keyCode === ESC_KEYCODE) {
-    clearPopup();
-    destinationNode.removeEventListener('keydown', onPopupEscPress);
+    deletePopup();
+    destinationNode.removeEventListener('keydown', escPressHandler);
   }
 };
 
@@ -272,18 +270,9 @@ var buttonClickHandler = function (evt) {
   var pinId = evt.target.dataset.pinid;
   if (pinId) {
     renderPopup(pinId);
-
     var cardClose = document.querySelector('.popup__close');
-    cardClose.addEventListener('click', function () {
-      clearPopup();
-    });
-
-    cardClose.addEventListener('keydown', function () {
-      if (evt.keyCode === ENTER_KEYCODE) {
-        clearPopup();
-      }
-    });
-    destinationNode.addEventListener('keydown', onPopupEscPress);
+    cardClose.addEventListener('click', deletePopup);
+    destinationNode.addEventListener('keydown', escPressHandler);
   }
 };
 
@@ -291,43 +280,36 @@ var buttonClickHandler = function (evt) {
 var validationRoom = function () {
   if (roomNumber.value === '1' && capacity.value !== '1') {
     roomNumber.setCustomValidity('Одна комната только для одного гостя');
-  } else if (
-    (roomNumber.value === '2' && (capacity.value !== '1' && capacity.value !== '2'))
-  ) {
+  } else if (roomNumber.value === '2' && capacity.value !== '1' && capacity.value !== '2') {
     roomNumber.setCustomValidity('Две комнаты только для одного или двух гостей');
-  } else if (
-    (roomNumber.value === '3' && capacity.value === '0')
-  ) {
+  } else if (roomNumber.value === '3' && capacity.value === '0') {
     roomNumber.setCustomValidity('Можно заселить только гостей');
-  } else if (
-    (roomNumber.value === '100' && capacity.value !== '0')
-  ) {
+  } else if (roomNumber.value === '100' && capacity.value !== '0') {
     roomNumber.setCustomValidity('Данный вариант не может использоваться для гостей');
   } else {
     roomNumber.setCustomValidity('');
-    capacity.setCustomValidity('');
   }
 };
 
-var timeinChangeHandle = function () {
+var timeinChangeHandler = function () {
   if (timein.value !== timeout.value) {
     timeout.value = timein.value;
   }
 };
 
-var timeoutChangeHandle = function () {
+var timeoutChangeHandler = function () {
   if (timein.value !== timeout.value) {
     timein.value = timeout.value;
   }
 };
 
-var submitClickHandle = function () {
+var submitHandler = function () {
   validationRoom();
-  typeInputChangeHandle();
+  typeInputChangeHandler();
 };
 
 // проверка типа объекта и цены
-var typeInputChangeHandle = function () {
+var typeInputChangeHandler = function () {
   var min = 0;
   if (type.value === 'bungalo') {
     min = 0;
@@ -350,15 +332,16 @@ var activatePage = function () {
   deleteAttributeAll('fieldset', 'disabled');
   renderPins();
   validation();
+  typeInputChangeHandler();
 };
 
 var clearForm = function () {
-  featureWifi.checked = 0;
-  featureDishwasher.checked = 0;
-  featureParking.checked = 0;
-  featureWasher.checked = 0;
-  featureElevator.checked = 0;
-  featureConditioner.checked = 0;
+  featureWifi.checked = false;
+  featureDishwasher.checked = false;
+  featureParking.checked = false;
+  featureWasher.checked = false;
+  featureElevator.checked = false;
+  featureConditioner.checked = false;
   price.value = '';
   address.value = '';
   description.value = '';
@@ -367,18 +350,18 @@ var clearForm = function () {
 
 // переводим страницу в неактивное состояние
 var deactivatePage = function () {
-  submit.removeEventListener('click', submitClickHandle);
-  type.removeEventListener('change', typeInputChangeHandle);
-  timeout.removeEventListener('change', timeoutChangeHandle);
-  timein.removeEventListener('change', timeinChangeHandle);
+  submit.removeEventListener('click', submitHandler);
+  type.removeEventListener('change', typeInputChangeHandler);
+  timeout.removeEventListener('change', timeoutChangeHandler);
+  timein.removeEventListener('change', timeinChangeHandler);
   destinationNode.addEventListener('click', buttonClickHandler);
   formReset.removeEventListener('click', formResetClickHandler);
   setAttributeAll('fieldset', 'disabled');
-  setClassToBlock('.map', 'map--faded');
-  setClassToBlock('.ad-form', 'ad-form--disabled');
-  clearPopup();
+  addClassToBlock('.map', 'map--faded');
+  addClassToBlock('.ad-form', 'ad-form--disabled');
+  deletePopup();
   clearForm();
-  clearPins();
+  deletePins();
 };
 
 var formResetClickHandler = function () {
@@ -387,15 +370,15 @@ var formResetClickHandler = function () {
 
 // подключить обработчики для валидации
 var validation = function () {
-  submit.addEventListener('click', submitClickHandle);
-  type.addEventListener('change', typeInputChangeHandle);
-  timeout.addEventListener('change', timeoutChangeHandle);
-  timein.addEventListener('change', timeinChangeHandle);
+  submit.addEventListener('click', submitHandler);
+  type.addEventListener('change', typeInputChangeHandler);
+  timeout.addEventListener('change', timeoutChangeHandler);
+  timein.addEventListener('change', timeinChangeHandler);
   destinationNode.addEventListener('click', buttonClickHandler);
   formReset.addEventListener('click', formResetClickHandler);
 };
 
-var pinMouseUpHandle = function () {
+var pinMouseUpHandler = function () {
   activatePage();
 };
 
@@ -412,7 +395,7 @@ var timein = document.querySelector('#timein');
 var timeout = document.querySelector('#timeout');
 var roomNumber = document.querySelector('#room_number');
 var capacity = document.querySelector('#capacity');
-var submit = document.querySelector('.ad-form__submit');
+var submit = document.querySelector('.ad-form');
 var formReset = document.querySelector('.ad-form__reset');
 var featureWifi = document.querySelector('#feature-wifi');
 var featureDishwasher = document.querySelector('#feature-dishwasher');
@@ -423,4 +406,4 @@ var featureConditioner = document.querySelector('#feature-conditioner');
 var description = document.querySelector('#description');
 var title = document.querySelector('#title');
 
-mapPin.addEventListener('mouseup', pinMouseUpHandle);
+mapPin.addEventListener('mouseup', pinMouseUpHandler);
