@@ -3,6 +3,8 @@
 // задаем количество объявлений
 var ADVERT_COUNT = 8;
 var ESC_KEYCODE = 27;
+var PINWIDTH = 62;
+var PINHEIGHT = 87;
 
 // массивы тестовых данных
 var advertTitles = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец',
@@ -252,11 +254,10 @@ var deleteAttributeAll = function (nodeSelector, selectedAttribute) {
 // получаем адрес метки
 var getAddressElement = function (className) {
   var selectedElement = document.querySelector(className);
-  var width = selectedElement.offsetWidth;
-  var height = selectedElement.offsetHeight;
-  var pinX = selectedElement.offsetLeft + Math.round(width / 2);
-  var pinY = selectedElement.offsetTop + Math.round(height / 2);
+  var pinX = selectedElement.offsetLeft + PINWIDTH / 2;
+  var pinY = selectedElement.offsetTop + PINHEIGHT;
   return pinX + ', ' + pinY;
+  address.setAttribute('value', pinX + ', ' + pinY);
 };
 
 var escPressHandler = function (evt) {
@@ -328,7 +329,6 @@ var typeInputChangeHandler = function () {
 var activatePage = function () {
   deleteClassFromBlock('.map', 'map--faded');
   deleteClassFromBlock('.ad-form', 'ad-form--disabled');
-  address.setAttribute('value', getAddressElement('.map__pin--main'));
   deleteAttributeAll('fieldset', 'disabled');
   renderPins();
   validation();
@@ -343,12 +343,13 @@ var clearForm = function () {
   featureElevator.checked = false;
   featureConditioner.checked = false;
   price.value = '';
-  address.value = '';
   description.value = '';
   title.value = '';
+  mapPin.style.cssText = pinStyle;
+  address.setAttribute('value', getAddressElement('.map__pin--main'));
 };
 
-// переводим страницу в неактивное состояние
+
 var deactivatePage = function () {
   submit.removeEventListener('click', submitHandler);
   type.removeEventListener('change', typeInputChangeHandler);
@@ -363,6 +364,7 @@ var deactivatePage = function () {
   clearForm();
   deletePins();
 };
+
 
 var formResetClickHandler = function () {
   deactivatePage();
@@ -405,5 +407,9 @@ var featureElevator = document.querySelector('#feature-elevator');
 var featureConditioner = document.querySelector('#feature-conditioner');
 var description = document.querySelector('#description');
 var title = document.querySelector('#title');
+var pinStyle = mapPin.style.cssText;
 
+address.setAttribute('value', getAddressElement('.map__pin--main'));
 mapPin.addEventListener('mouseup', pinMouseUpHandler);
+
+
