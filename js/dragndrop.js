@@ -23,6 +23,8 @@
     address.setAttribute('value', pinX + ', ' + pinY);
   };
 
+  setAddress();
+
   mapPin.addEventListener('mousedown', function (evt) {
     if (evt.target.tagName.toLowerCase() !== 'img') {
       return;
