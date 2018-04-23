@@ -2,59 +2,83 @@
 
 (function () {
   var PINWIDTH = 62;
-  var PINHEIGHT = 87;
-
+  var PINHEIGHT = 85;
+  var MIN_Y = 150;
+  var MIN_X = 0;
+  var MAX_Y = 500;
+  var MAX_X = 1200;
+  var minYPinPosition = MIN_Y - PINHEIGHT;
+  var maxYPinPosition = MAX_Y - PINHEIGHT;
+  var minXPinPosition = MIN_X;
+  var maxXPinPosition = MAX_X - PINWIDTH;
+  var map = document.querySelector('.map');
   var mapPin = document.querySelector('.map__pin--main');
+  var address = document.querySelector('#address');
+
+
+  // получаем адрес метки
+  var setAddress = function () {
+    var pinX = mapPin.offsetLeft + PINWIDTH / 2;
+    var pinY = mapPin.offsetTop + PINHEIGHT;
+    address.setAttribute('value', pinX + ', ' + pinY);
+  };
+
   mapPin.addEventListener('mousedown', function (evt) {
+    if (evt.target.tagName.toLowerCase() !== 'img') {
+      return;
+    }
+    if (document.querySelector('.map--faded')) {
+      activatePage();
+    }
     evt.preventDefault();
+    var xInPin = evt.offsetX;
+    var yInPin = evt.offsetY;
     var startCoords = {
-      x: evt.clientX,
-      y: evt.clientY
+      x: evt.clientX - xInPin,
+      y: evt.clientY - yInPin
     };
 
     var onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
-
       var shift = {
-        x: startCoords.x - moveEvt.clientX,
-        y: startCoords.y - moveEvt.clientY
+        x: 0,
+        y: 0
       };
 
-      var testY = mapPin.offsetTop - shift.y;
-      var testX = mapPin.offsetLeft - shift.x;
-
-
-      if (testY < (150 - PINHEIGHT)) {
-        testY = (150 - PINHEIGHT);
+      shift.y = startCoords.y - moveEvt.clientY;
+      var testY = mapPin.offsetTop - shift.y - yInPin;
+      if (testY < minYPinPosition) {
+        testY = minYPinPosition;
       }
-      if (testY > 500 - PINHEIGHT) {
-        testY = 500 - PINHEIGHT;
+      if (testY > maxYPinPosition) {
+        testY = maxYPinPosition;
       }
 
-      if (testX < 0) {
-        testX = 0;
+      shift.x = startCoords.x - moveEvt.clientX;
+      var testX = mapPin.offsetLeft - shift.x - xInPin;
+      if (testX < minXPinPosition) {
+        testX = minXPinPosition;
       }
-      if (testX > (1200 - PINWIDTH)) {
-        testX = (1200 - PINWIDTH);
+      if (testX > maxXPinPosition) {
+        testX = maxXPinPosition;
       }
+
       startCoords = {
-        x: moveEvt.clientX,
-        y: moveEvt.clientY
+        x: testX + map.getBoundingClientRect().x,
+        y: testY + map.getBoundingClientRect().y
       };
       mapPin.style.top = testY + 'px';
       mapPin.style.left = testX + 'px';
-      address.setAttribute('value', getAddressElement('.map__pin--main'));
+      setAddress();
     };
 
     var onMouseUp = function (upEvt) {
       upEvt.preventDefault();
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
+      map.removeEventListener('mousemove', onMouseMove);
+      map.removeEventListener('mouseup', onMouseUp);
+
     };
-
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
+    map.addEventListener('mousemove', onMouseMove);
+    map.addEventListener('mouseup', onMouseUp);
   });
-
-
 })();

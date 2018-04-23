@@ -3,8 +3,6 @@
 // задаем количество объявлений
 var ADVERT_COUNT = 8;
 var ESC_KEYCODE = 27;
-var PINWIDTH = 62;
-var PINHEIGHT = 87;
 
 // массивы тестовых данных
 var advertTitles = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец',
@@ -251,15 +249,6 @@ var deleteAttributeAll = function (nodeSelector, selectedAttribute) {
   }
 };
 
-// получаем адрес метки
-var getAddressElement = function (className) {
-  var selectedElement = document.querySelector(className);
-  var pinX = selectedElement.offsetLeft + PINWIDTH / 2;
-  var pinY = selectedElement.offsetTop + PINHEIGHT;
-  return pinX + ', ' + pinY;
-  address.setAttribute('value', pinX + ', ' + pinY);
-};
-
 var escPressHandler = function (evt) {
   if (evt.keyCode === ESC_KEYCODE) {
     deletePopup();
@@ -346,7 +335,7 @@ var clearForm = function () {
   description.value = '';
   title.value = '';
   mapPin.style.cssText = pinStyle;
-  address.setAttribute('value', getAddressElement('.map__pin--main'));
+  setAddress();
 };
 
 
@@ -380,9 +369,6 @@ var validation = function () {
   formReset.addEventListener('click', formResetClickHandler);
 };
 
-var pinMouseUpHandler = function () {
-  activatePage();
-};
 
 // начало
 setAttributeAll('fieldset', 'disabled');
@@ -408,8 +394,3 @@ var featureConditioner = document.querySelector('#feature-conditioner');
 var description = document.querySelector('#description');
 var title = document.querySelector('#title');
 var pinStyle = mapPin.style.cssText;
-
-address.setAttribute('value', getAddressElement('.map__pin--main'));
-mapPin.addEventListener('mouseup', pinMouseUpHandler);
-
-
