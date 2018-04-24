@@ -249,16 +249,6 @@ var deleteAttributeAll = function (nodeSelector, selectedAttribute) {
   }
 };
 
-// получаем адрес метки
-var getAddressElement = function (className) {
-  var selectedElement = document.querySelector(className);
-  var width = selectedElement.offsetWidth;
-  var height = selectedElement.offsetHeight;
-  var pinX = selectedElement.offsetLeft + Math.round(width / 2);
-  var pinY = selectedElement.offsetTop + Math.round(height / 2);
-  return pinX + ', ' + pinY;
-};
-
 var escPressHandler = function (evt) {
   if (evt.keyCode === ESC_KEYCODE) {
     deletePopup();
@@ -328,7 +318,6 @@ var typeInputChangeHandler = function () {
 var activatePage = function () {
   deleteClassFromBlock('.map', 'map--faded');
   deleteClassFromBlock('.ad-form', 'ad-form--disabled');
-  address.setAttribute('value', getAddressElement('.map__pin--main'));
   deleteAttributeAll('fieldset', 'disabled');
   renderPins();
   validation();
@@ -343,12 +332,13 @@ var clearForm = function () {
   featureElevator.checked = false;
   featureConditioner.checked = false;
   price.value = '';
-  address.value = '';
   description.value = '';
   title.value = '';
+  mapPin.style.cssText = pinStyle;
+  setAddress();
 };
 
-// переводим страницу в неактивное состояние
+
 var deactivatePage = function () {
   submit.removeEventListener('click', submitHandler);
   type.removeEventListener('change', typeInputChangeHandler);
@@ -364,6 +354,7 @@ var deactivatePage = function () {
   deletePins();
 };
 
+
 var formResetClickHandler = function () {
   deactivatePage();
 };
@@ -378,9 +369,6 @@ var validation = function () {
   formReset.addEventListener('click', formResetClickHandler);
 };
 
-var pinMouseUpHandler = function () {
-  activatePage();
-};
 
 // начало
 setAttributeAll('fieldset', 'disabled');
@@ -405,5 +393,4 @@ var featureElevator = document.querySelector('#feature-elevator');
 var featureConditioner = document.querySelector('#feature-conditioner');
 var description = document.querySelector('#description');
 var title = document.querySelector('#title');
-
-mapPin.addEventListener('mouseup', pinMouseUpHandler);
+var pinStyle = mapPin.style.cssText;
