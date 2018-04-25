@@ -14,23 +14,23 @@
   var map = document.querySelector('.map');
   var mapPin = document.querySelector('.map__pin--main');
   var address = document.querySelector('#address');
-
+  window.pinStyle = mapPin.style.cssText;
 
   // получаем адрес метки
-  var setAddress = function () {
+  window.setAddress = function () {
     var pinX = mapPin.offsetLeft + PINWIDTH / 2;
     var pinY = mapPin.offsetTop + PINHEIGHT;
     address.setAttribute('value', pinX + ', ' + pinY);
   };
 
-  setAddress();
+  window.setAddress();
 
   mapPin.addEventListener('mousedown', function (evt) {
     if (evt.target.tagName.toLowerCase() !== 'img') {
       return;
     }
     if (document.querySelector('.map--faded')) {
-      activatePage();
+      window.activatePage();
     }
     evt.preventDefault();
     var xInPin = evt.offsetX;
@@ -71,14 +71,13 @@
       };
       mapPin.style.top = testY + 'px';
       mapPin.style.left = testX + 'px';
-      setAddress();
+      window.setAddress();
     };
 
     var onMouseUp = function (upEvt) {
       upEvt.preventDefault();
       map.removeEventListener('mousemove', onMouseMove);
       map.removeEventListener('mouseup', onMouseUp);
-
     };
     map.addEventListener('mousemove', onMouseMove);
     map.addEventListener('mouseup', onMouseUp);
