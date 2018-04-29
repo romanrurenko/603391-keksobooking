@@ -63,6 +63,13 @@
     window.typeInputChangeHandler();
   };
 
+  window.form = document.querySelector('.ad-form');
+  window.form.addEventListener('submit', function (evt) {
+    window.backend.save(new FormData(window.form), window.sendSuccess, window.showSendError);
+    evt.preventDefault();
+  });
+
+
   // проверка типа объекта и цены
   window.typeInputChangeHandler = function () {
     var min = 0;
