@@ -13,8 +13,9 @@
     }
   };
 
-  // выводим пины на карту
+  // выводим пины на карту //console.log(adverts);
   window.renderPins = function (array) {
+    window.adverts = array;
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < array.length; i++) {
       var copyTemplate = templateContainer.querySelector('.map__pin').cloneNode(true);

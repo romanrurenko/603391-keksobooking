@@ -1,8 +1,6 @@
 'use strict';
 
 (function () {
-  var ADVERT_COUNT = 8;
-
   // удалить класс у блока
   var deleteClassFromBlock = function (elementSelector, removedClass) {
     var pageBlock = document.querySelector(elementSelector);
@@ -40,7 +38,7 @@
     deleteClassFromBlock('.map', 'map--faded');
     deleteClassFromBlock('.ad-form', 'ad-form--disabled');
     deleteAttributeAll('fieldset', 'disabled');
-    window.renderPins(window.adverts);
+    window.backend.load(window.renderPins, window.showLoadError);
     window.validation();
     window.typeInputChangeHandler();
   };
@@ -52,6 +50,7 @@
     window.timein.removeEventListener('change', window.timeinChangeHandler);
     window.destinationNode.addEventListener('click', window.buttonClickHandler);
     window.formReset.removeEventListener('click', window.formResetClickHandler);
+    window.form.removeEventListener('click', window.formResetClickHandler);
     setAttributeAll('fieldset', 'disabled');
     addClassToBlock('.map', 'map--faded');
     addClassToBlock('.ad-form', 'ad-form--disabled');
@@ -62,7 +61,6 @@
 
   // начало
   setAttributeAll('fieldset', 'disabled');
-  window.adverts = window.generateRandomAdvert(ADVERT_COUNT);
   window.mapPin = document.querySelector('.map__pin--main');
   window.type = document.querySelector('#type');
   window.timein = document.querySelector('#timein');

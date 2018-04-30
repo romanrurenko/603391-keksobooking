@@ -123,6 +123,41 @@ fieldset {
   border-radius: 0 0 10px 10px;
 }
 
+.message
+{
+  position: fixed;
+  z-index: 100;
+  top: 120px;
+  left: 20%;
+  min-width: 60%;
+
+  text-align: center;
+  padding-top: 80px;
+  padding-bottom: 40px;
+  font-size:  20px;
+  color: #ffffff;
+  background: rgba(3, 28, 45, 0.7);
+}
+
+.message:before
+{
+  content: 'Ошибка ввода/вывода:';
+  position: fixed;
+  z-index: 150;
+  top: 120px;
+  left: 20%;
+  min-width: 60%;
+  margin: 0px auto;
+  text-align: center;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: 20px;
+  color: #ffffff;
+  background: rgba(3, 28, 45, 0.8);
+}
+
+
+
 .map__pins {
   position: relative;
   width: 100%;
