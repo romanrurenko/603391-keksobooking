@@ -78,7 +78,7 @@
     });
   };
 
-  window.doFilter = function () {
+  window.applyFilter = function () {
 
     window.filtredAd = window.filtredAd.filter(function (selectValue) {
       var isAny = housingType.value;
@@ -118,7 +118,7 @@
     window.filtredAd = window.adverts.slice();
     window.deletePopup();
     window.deletePins();
-    window.doFilter();
+    window.applyFilter();
   };
 
   var mapFilter = document.querySelector('.map__filters');
