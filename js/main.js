@@ -38,7 +38,7 @@
     deleteClassFromBlock('.map', 'map--faded');
     deleteClassFromBlock('.ad-form', 'ad-form--disabled');
     deleteAttributeAll('fieldset', 'disabled');
-    window.backend.load(window.renderPins, window.showLoadError);
+    window.backend.load(window.onLoadSuccess, window.showLoadError);
     window.validation();
     window.typeInputChangeHandler();
   };

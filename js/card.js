@@ -2,25 +2,20 @@
 
 (function () {
   var ESC_KEYCODE = 27;
+  var typeEngToRus = {
+    'flat': 'Квартира',
+    'house': 'Дом',
+    'bungalo': 'Бунгало',
+    'palace': 'Дворец'
+  };
 
   // подстановка типа недвижимости
   var switchTypeRealty = function (typeRealty) {
-    switch (typeRealty) {
-      case 'flat': {
-        return 'Квартира';
-      }
-      case 'house': {
-        return 'Дом';
-      }
-      case 'bungalo': {
-        return 'Бунгало';
-      }
-      case 'palace': {
-        return 'Дворец';
-      }
-      default: {
-        return typeRealty;
-      }
+    var newType = typeEngToRus[typeRealty];
+    if (newType) {
+      return newType;
+    } else {
+      return typeRealty;
     }
   };
 
@@ -30,6 +25,30 @@
       window.destinationNode.removeEventListener('keydown', escPressHandler);
     }
   };
+
+  // создаем popup на основании шаблона
+  window.renderPopup = function (advertNumber) {
+    window.deletePopup();
+    var fragment = document.createDocumentFragment();
+    var popupTemplate = window.templateContainer.querySelector('.popup').cloneNode(true);
+    fragment.appendChild(popupTemplate);
+
+    var element = window.filtredAd[advertNumber];
+    fragment.querySelector('.popup__avatar').src = element.author.avatar;
+    fragment.querySelector('.popup__title').textContent = element.offer.title;
+    fragment.querySelector('.popup__text--address').textContent = element.offer.address;
+    fragment.querySelector('.popup__text--price').textContent = element.offer.price + '₽/ночь';
+    fragment.querySelector('.popup__type').textContent = switchTypeRealty(element.offer.type);
+    var textCapacity = element.offer.rooms + ' комнаты для ' + element.offer.guests + ' гостей';
+    fragment.querySelector('.popup__text--capacity').textContent = textCapacity;
+    deleteElements('.popup__features', fragment);
+    fragment.querySelector('.popup__features').appendChild(insertFeatures(element.offer.features));
+    fragment.querySelector('.popup__description').textContent = element.offer.description;
+    deleteElements('.popup__photos', fragment);
+    fragment.querySelector('.popup__photos').appendChild(insertPhotos(element.offer.photos));
+    window.destinationNode.append(fragment);
+  };
+
 
   window.buttonClickHandler = function (evt) {
     var pinId = evt.target.dataset.pinid;
@@ -81,27 +100,5 @@
       fragment.appendChild(element);
     }
     return fragment;
-  };
-
-  // создаем popup на основании шаблона
-  window.renderPopup = function (advertNumber) {
-    window.deletePopup();
-    var fragment = document.createDocumentFragment();
-    var popupTemplate = window.templateContainer.querySelector('.popup').cloneNode(true);
-    fragment.appendChild(popupTemplate);
-    var element = window.adverts[advertNumber];
-    fragment.querySelector('.popup__avatar').src = element.author.avatar;
-    fragment.querySelector('.popup__title').textContent = element.offer.title;
-    fragment.querySelector('.popup__text--address').textContent = element.offer.address;
-    fragment.querySelector('.popup__text--price').textContent = element.offer.price + '₽/ночь';
-    fragment.querySelector('.popup__type').textContent = switchTypeRealty(element.offer.type);
-    var textCapacity = element.offer.rooms + ' комнаты для ' + element.offer.guests + ' гостей';
-    fragment.querySelector('.popup__text--capacity').textContent = textCapacity;
-    deleteElements('.popup__features', fragment);
-    fragment.querySelector('.popup__features').appendChild(insertFeatures(element.offer.features));
-    fragment.querySelector('.popup__description').textContent = element.offer.description;
-    deleteElements('.popup__photos', fragment);
-    fragment.querySelector('.popup__photos').appendChild(insertPhotos(element.offer.photos));
-    window.destinationNode.append(fragment);
   };
 })();

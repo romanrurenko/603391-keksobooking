@@ -3,6 +3,12 @@
 (function () {
   var TEN_SECONDS = 10000;
   var SEVEN_SECONDS = 7000;
+  var errorCodeToName = {
+    400: '400 Неверный запрос',
+    401: '401 Пользователь не авторизован',
+    404: '404 Данные не найдены',
+    500: '500 Внутряняя ошибка сервера'
+  };
 
   window.succesMsg = document.querySelector('.success');
   window.errorMsg = document.querySelector('.message');
@@ -30,13 +36,10 @@
       xhr.timeout = TEN_SECONDS; // 10s
       xhr.open('GET', LOAD_URL);
       xhr.send();
-
-
     },
     save: function (data, onSuccess, onError) {
       var xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
-
       xhr.addEventListener('load', function () {
 
         if (xhr.status === 200) {
@@ -92,17 +95,11 @@
   };
 
   var errorMessage = function (status, statusText) {
-    switch (status) {
-      case 400:
-        return ('400 Неверный запрос');
-      case 401:
-        return ('401 Пользователь не авторизован');
-      case 404:
-        return ('404 Данные не найдены');
-      case 500:
-        return ('500 Внутряняя ошибка сервера');
-      default:
-        return ('Cтатус ответа: : ' + status + ' ' + statusText);
+    var knownError = errorCodeToName[status];
+    if (knownError) {
+      return knownError;
+    } else {
+      return ('Cтатус ответа: ' + status + ' ' + statusText);
     }
   };
 })();
