@@ -12,11 +12,7 @@
   // подстановка типа недвижимости
   var switchTypeRealty = function (typeRealty) {
     var newType = typeEngToRus[typeRealty];
-    if (newType) {
-      return newType;
-    } else {
-      return typeRealty;
-    }
+    return (newType) ? newType : typeRealty;
   };
 
   var escPressHandler = function (evt) {

@@ -2,7 +2,7 @@
 
 (function () {
 
-  var PriceLevel = {
+  var priceLevel = {
     any: {
       min: 0,
       max: Infinity
@@ -46,7 +46,6 @@
   // выводим пины на карту
   window.renderPins = function () {
     window.fragment = document.createDocumentFragment();
-
     var countPins = (window.filtredAd.length > 5) ? 5 : window.filtredAd.length;
     for (var i = 0; i < countPins; i++) {
       generatePins(i, window.filtredAd[i]);
@@ -88,8 +87,8 @@
 
     window.filtredAd = window.filtredAd.filter(function (selectValue) {
       var isAny = housingPrice.value === 'any';
-      var minValue = (selectValue.offer.price >= PriceLevel[housingPrice.value].min);
-      var maxValue = (selectValue.offer.price < PriceLevel[housingPrice.value].max);
+      var minValue = (selectValue.offer.price >= priceLevel[housingPrice.value].min);
+      var maxValue = (selectValue.offer.price < priceLevel[housingPrice.value].max);
       return isAny || (minValue && maxValue);
     });
 

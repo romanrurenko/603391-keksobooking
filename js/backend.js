@@ -76,10 +76,10 @@
 
   window.sendSuccess = function () {
     window.succesMsg.classList.remove('hidden');
-    setTimeout(SuccesAndRefresh, SEVEN_SECONDS);
+    setTimeout(succesAndRefresh, SEVEN_SECONDS);
   };
 
-  var SuccesAndRefresh = function () {
+  var succesAndRefresh = function () {
     window.succesMsg.classList.add('hidden');
     window.deactivatePage();
   };

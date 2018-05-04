@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var AdvertTypePrice = {
+  var advertTypePrice = {
     bungalo: 0,
     flat: 1000,
     house: 5000,
@@ -78,7 +78,7 @@
   // проверка типа объекта и цены
   window.typeInputChangeHandler = function () {
     var min = 0;
-    min = AdvertTypePrice[window.type.value];
+    min = advertTypePrice[window.type.value];
     price.placeholder = 'От ' + min;
     price.setAttribute('min', min);
   };
