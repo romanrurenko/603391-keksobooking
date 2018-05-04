@@ -125,8 +125,4 @@
   mapFilter.addEventListener('change', function () {
     window.debounce(updatePins);
   });
-
-  mapFilter.addEventListener('mousewheel', function () {
-  });
-
 })();

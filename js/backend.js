@@ -96,10 +96,8 @@
 
   var errorMessage = function (status, statusText) {
     var knownError = errorCodeToName[status];
-    if (knownError) {
-      return knownError;
-    } else {
-      return ('Cтатус ответа: ' + status + ' ' + statusText);
-    }
+    var unknownError = 'Cтатус ответа: ' + status + ' ' + statusText;
+    return (knownError) ? knownError : unknownError;
   };
+
 })();
