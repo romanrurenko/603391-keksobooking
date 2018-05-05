@@ -1,6 +1,12 @@
 'use strict';
 
 (function () {
+  var advertTypePrice = {
+    bungalo: 0,
+    flat: 1000,
+    house: 5000,
+    palace: 10000
+  };
   var featureWifi = document.querySelector('#feature-wifi');
   var featureDishwasher = document.querySelector('#feature-dishwasher');
   var featureParking = document.querySelector('#feature-parking');
@@ -41,6 +47,11 @@
     title.value = '';
     window.mapPin.style.cssText = window.pinStyle;
     window.setAddress();
+    var container = document.querySelector('.ad-form__photo');
+    while (container.firstChild) {
+      container.removeChild(container.firstChild);
+    }
+    document.querySelector('.ad-form-header__preview img').src = 'img/muffin-grey.svg';
   };
 
   // проверка комнат и гостей
@@ -69,19 +80,10 @@
     evt.preventDefault();
   });
 
-
   // проверка типа объекта и цены
   window.typeInputChangeHandler = function () {
     var min = 0;
-    if (window.type.value === 'bungalo') {
-      min = 0;
-    } else if (window.type.value === 'flat') {
-      min = 1000;
-    } else if (window.type.value === 'house') {
-      min = 5000;
-    } else if (window.type.value === 'palace') {
-      min = 10000;
-    }
+    min = advertTypePrice[window.type.value];
     price.placeholder = 'От ' + min;
     price.setAttribute('min', min);
   };

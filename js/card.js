@@ -2,26 +2,31 @@
 
 (function () {
   var ESC_KEYCODE = 27;
+  var typeEngToRus = {
+    'flat': 'Квартира',
+    'house': 'Дом',
+    'bungalo': 'Бунгало',
+    'palace': 'Дворец'
+  };
 
-  // подстановка типа недвижимости
-  var switchTypeRealty = function (typeRealty) {
-    switch (typeRealty) {
-      case 'flat': {
-        return 'Квартира';
-      }
-      case 'house': {
-        return 'Дом';
-      }
-      case 'bungalo': {
-        return 'Бунгало';
-      }
-      case 'palace': {
-        return 'Дворец';
-      }
-      default: {
-        return typeRealty;
-      }
+  var show = function (elementSelector) {
+    var pageBlock = document.querySelector(elementSelector);
+    if (pageBlock) {
+      pageBlock.classList.remove('hidden');
     }
+  };
+
+  var hide = function (elementSelector) {
+    var pageBlock = document.querySelector(elementSelector);
+    if (pageBlock) {
+      pageBlock.classList.add('hidden');
+    }
+  };
+
+
+  var switchTypeRealty = function (typeRealty) {
+    var newType = typeEngToRus[typeRealty];
+    return (newType) ? newType : typeRealty;
   };
 
   var escPressHandler = function (evt) {
@@ -29,6 +34,43 @@
       window.deletePopup();
       window.destinationNode.removeEventListener('keydown', escPressHandler);
     }
+  };
+
+  // создаем popup на основании шаблона
+  window.renderPopup = function (advertNumber) {
+    window.deletePopup();
+    var fragment = document.createDocumentFragment();
+    var popupTemplate = window.templateContainer.querySelector('.popup').cloneNode(true);
+    fragment.appendChild(popupTemplate);
+
+    var element = window.filtredAd[advertNumber];
+
+    fragment.querySelector('.popup__avatar').src = element.author.avatar;
+    fragment.querySelector('.popup__title').textContent = element.offer.title;
+    fragment.querySelector('.popup__text--address').textContent = element.offer.address;
+    fragment.querySelector('.popup__text--price').textContent = element.offer.price + '₽/ночь';
+    fragment.querySelector('.popup__type').textContent = switchTypeRealty(element.offer.type);
+    var textCapacity = element.offer.rooms + ' комнаты для ' + element.offer.guests + ' гостей';
+    fragment.querySelector('.popup__text--capacity').textContent = textCapacity;
+
+    deleteElements('.popup__features', fragment);
+    if (element.offer.features.length !== null) {
+      fragment.querySelector('.popup__features').appendChild(insertFeatures(element.offer.features));
+      show('.popup__features');
+    } else {
+      hide('.popup__features');
+    }
+
+    if (element.offer.description) {
+      fragment.querySelector('.popup__description').textContent = element.offer.description;
+      show('.popup__description');
+    } else {
+      hide('.popup__description');
+    }
+
+    deleteElements('.popup__photos', fragment);
+    fragment.querySelector('.popup__photos').appendChild(insertPhotos(element.offer.photos));
+    window.destinationNode.append(fragment);
   };
 
   window.buttonClickHandler = function (evt) {
@@ -81,27 +123,5 @@
       fragment.appendChild(element);
     }
     return fragment;
-  };
-
-  // создаем popup на основании шаблона
-  window.renderPopup = function (advertNumber) {
-    window.deletePopup();
-    var fragment = document.createDocumentFragment();
-    var popupTemplate = window.templateContainer.querySelector('.popup').cloneNode(true);
-    fragment.appendChild(popupTemplate);
-    var element = window.adverts[advertNumber];
-    fragment.querySelector('.popup__avatar').src = element.author.avatar;
-    fragment.querySelector('.popup__title').textContent = element.offer.title;
-    fragment.querySelector('.popup__text--address').textContent = element.offer.address;
-    fragment.querySelector('.popup__text--price').textContent = element.offer.price + '₽/ночь';
-    fragment.querySelector('.popup__type').textContent = switchTypeRealty(element.offer.type);
-    var textCapacity = element.offer.rooms + ' комнаты для ' + element.offer.guests + ' гостей';
-    fragment.querySelector('.popup__text--capacity').textContent = textCapacity;
-    deleteElements('.popup__features', fragment);
-    fragment.querySelector('.popup__features').appendChild(insertFeatures(element.offer.features));
-    fragment.querySelector('.popup__description').textContent = element.offer.description;
-    deleteElements('.popup__photos', fragment);
-    fragment.querySelector('.popup__photos').appendChild(insertPhotos(element.offer.photos));
-    window.destinationNode.append(fragment);
   };
 })();
