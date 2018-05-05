@@ -850,8 +850,8 @@ fieldset {
   margin-right: 10px;
   margin-bottom: 10px;
 
-  width: 70px;
-  height: 70px;
+  min-width: 70px;
+  min-height: 70px;
 
   background-color: #e4e4de;
   border-radius: 5px;
@@ -1036,7 +1036,9 @@ fieldset {
   -webkit-box-shadow: 0 0 2px 2px #ff6547;
           box-shadow: 0 0 2px 2px #ff6547;
 }
-
+.ghost {
+  opacity: .7;
+}
 
 /* Карточка объявления */
 

@@ -47,6 +47,11 @@
     title.value = '';
     window.mapPin.style.cssText = window.pinStyle;
     window.setAddress();
+    var container = document.querySelector('.ad-form__photo');
+    while (container.firstChild) {
+      container.removeChild(container.firstChild);
+    }
+    document.querySelector('.ad-form-header__preview img').src = 'img/muffin-grey.svg';
   };
 
   // проверка комнат и гостей

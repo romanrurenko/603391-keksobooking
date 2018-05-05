@@ -9,7 +9,6 @@
     'palace': 'Дворец'
   };
 
-  // подстановка типа недвижимости
   var switchTypeRealty = function (typeRealty) {
     var newType = typeEngToRus[typeRealty];
     return (newType) ? newType : typeRealty;

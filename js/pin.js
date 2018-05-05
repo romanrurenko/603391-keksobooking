@@ -26,7 +26,7 @@
   var housingRooms = document.querySelector('#housing-rooms');
   var housingGuests = document.querySelector('#housing-guests');
 
-  window.templateContainer = document.querySelector('template').content;
+  var templateContainer = document.querySelector('template').content;
 
   // удаляем пины
   window.deletePins = function () {
@@ -45,28 +45,28 @@
 
   // выводим пины на карту
   window.renderPins = function () {
-    window.fragment = document.createDocumentFragment();
+    var fragment = document.createDocumentFragment();
     var countPins = (window.filtredAd.length > 5) ? 5 : window.filtredAd.length;
     for (var i = 0; i < countPins; i++) {
-      generatePins(i, window.filtredAd[i]);
+      fragment.appendChild(generatePin(i, window.filtredAd[i]));
     }
-    window.destinationNode.appendChild(window.fragment);
+    window.destinationNode.appendChild(fragment);
   };
 
   // вносим Pin-ы в шаблон
-  var generatePins = function (i, elem) {
-    var templeteElement = window.templateContainer.querySelector('.map__pin').cloneNode(true);
+  var generatePin = function (i, element) {
+    var templeteElement = templateContainer.querySelector('.map__pin').cloneNode(true);
     var pinImage = templeteElement.querySelector('.map__pin img');
     var width = pinImage.width;
     var height = pinImage.height;
-    var pinX = elem.location.x - (width / 2);
-    var pinY = elem.location.y - height;
+    var pinX = element.location.x - (width / 2);
+    var pinY = element.location.y - height;
     templeteElement.style = 'left: ' + pinX + 'px; top: ' + pinY + 'px;';
     templeteElement.setAttribute('data-pinid', i);
     pinImage.setAttribute('data-pinid', i);
-    pinImage.src = elem.author.avatar;
-    pinImage.alt = elem.offer.title;
-    window.fragment.appendChild(templeteElement);
+    pinImage.src = element.author.avatar;
+    pinImage.alt = element.offer.title;
+    return templeteElement;
   };
 
   var featuresCheck = function (item) {
