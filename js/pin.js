@@ -40,6 +40,7 @@
 
   window.onLoadSuccess = function (loadArray) {
     window.adverts = loadArray.slice();
+    window.activateFilters();
     updatePins();
   };
 
@@ -80,7 +81,7 @@
   window.applyFilter = function () {
 
     window.filtredAd = window.filtredAd.filter(function (selectValue) {
-      var isAny = housingType.value;
+      var isAny = housingType.value === 'any';
       var isRequired = housingType.value === String(selectValue.offer.type);
       return (isAny || isRequired);
     });

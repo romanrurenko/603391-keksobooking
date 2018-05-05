@@ -43,6 +43,16 @@
     window.typeInputChangeHandler();
   };
 
+  window.activateFilters = function () {
+    deleteAttributeAll('.map__filter', 'disabled');
+  };
+
+  var deactivateFilters = function () {
+    setAttributeAll('.map__filter', 'disabled');
+    setAttributeAll('.map__checkbox', 'disabled');
+  };
+
+
   window.deactivatePage = function () {
     window.submit.removeEventListener('click', window.submitHandler);
     window.type.removeEventListener('change', window.typeInputChangeHandler);
@@ -57,10 +67,12 @@
     window.deletePopup();
     window.clearForm();
     window.deletePins();
+    deactivateFilters();
   };
 
   // начало
   setAttributeAll('fieldset', 'disabled');
+
   window.mapPin = document.querySelector('.map__pin--main');
   window.type = document.querySelector('#type');
   window.timein = document.querySelector('#timein');
@@ -69,4 +81,5 @@
   window.destinationNode = document.querySelector('.map');
   window.submit = document.querySelector('.ad-form');
   window.templateContainer = document.querySelector('template').content;
+  deactivateFilters();
 })();
