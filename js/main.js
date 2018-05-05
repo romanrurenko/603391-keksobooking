@@ -45,6 +45,7 @@
 
   window.activateFilters = function () {
     deleteAttributeAll('.map__filter', 'disabled');
+    deleteAttributeAll('.map__checkbox', 'disabled');
   };
 
   var deactivateFilters = function () {
