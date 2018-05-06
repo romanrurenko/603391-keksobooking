@@ -47,9 +47,9 @@
   // выводим пины на карту
   window.renderPins = function () {
     var fragment = document.createDocumentFragment();
-    var countPins = (window.filtredAd.length > 5) ? 5 : window.filtredAd.length;
+    var countPins = (window.filtringAd.length > 5) ? 5 : window.filtringAd.length;
     for (var i = 0; i < countPins; i++) {
-      fragment.appendChild(generatePin(i, window.filtredAd[i]));
+      fragment.appendChild(generatePin(i, window.filtringAd[i]));
     }
     window.destinationNode.appendChild(fragment);
   };
@@ -71,7 +71,7 @@
   };
 
   var featuresCheck = function (item) {
-    window.filtredAd = window.filtredAd.filter(function (selectValue) {
+    window.filtringAd = window.filtringAd.filter(function (selectValue) {
       var isChecked = item.checked;
       var isRequired = selectValue.offer.features.indexOf(item.value) > -1;
       return (!isChecked || isRequired);
@@ -80,26 +80,26 @@
 
   window.applyFilter = function () {
 
-    window.filtredAd = window.filtredAd.filter(function (selectValue) {
+    window.filtringAd = window.filtringAd.filter(function (selectValue) {
       var isAny = housingType.value === 'any';
       var isRequired = housingType.value === String(selectValue.offer.type);
       return (isAny || isRequired);
     });
 
-    window.filtredAd = window.filtredAd.filter(function (selectValue) {
+    window.filtringAd = window.filtringAd.filter(function (selectValue) {
       var isAny = housingPrice.value === 'any';
       var minValue = (selectValue.offer.price >= priceLevel[housingPrice.value].min);
       var maxValue = (selectValue.offer.price < priceLevel[housingPrice.value].max);
       return isAny || (minValue && maxValue);
     });
 
-    window.filtredAd = window.filtredAd.filter(function (selectValue) {
+    window.filtringAd = window.filtringAd.filter(function (selectValue) {
       var isAny = housingRooms.value === 'any';
       var isRequired = housingRooms.value === String(selectValue.offer.rooms);
       return (isAny || isRequired);
     });
 
-    window.filtredAd = window.filtredAd.filter(function (selectValue) {
+    window.filtringAd = window.filtringAd.filter(function (selectValue) {
       var isAny = housingGuests.value === 'any';
       var isRequired = housingGuests.value === String(selectValue.offer.guests);
       return (isAny || isRequired);
@@ -111,11 +111,11 @@
     inputFeatures.forEach(function (item) {
       featuresCheck(item);
     });
-    window.renderPins(window.filtredAd);
+    window.renderPins(window.filtringAd);
   };
 
   var updatePins = function () {
-    window.filtredAd = window.adverts.slice();
+    window.filtringAd = window.adverts.slice();
     window.deletePopup();
     window.deletePins();
     window.applyFilter();

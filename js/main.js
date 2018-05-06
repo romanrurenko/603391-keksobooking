@@ -39,7 +39,7 @@
     deleteClassFromBlock('.ad-form', 'ad-form--disabled');
     deleteAttributeAll('fieldset', 'disabled');
     window.backend.load(window.onLoadSuccess, window.showLoadError);
-    window.validation();
+    window.validate();
     window.typeInputChangeHandler();
   };
 
@@ -73,7 +73,6 @@
 
   // начало
   setAttributeAll('fieldset', 'disabled');
-
   window.mapPin = document.querySelector('.map__pin--main');
   window.type = document.querySelector('#type');
   window.timein = document.querySelector('#timein');
