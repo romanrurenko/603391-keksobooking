@@ -39,7 +39,7 @@
     deleteClassFromBlock('.ad-form', 'ad-form--disabled');
     deleteAttributeAll('fieldset', 'disabled');
     window.backend.load(window.onLoadSuccess, window.showLoadError);
-    window.validation();
+    window.validate();
     window.typeInputChangeHandler();
   };
 

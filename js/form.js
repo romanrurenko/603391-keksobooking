@@ -55,7 +55,7 @@
   };
 
   // проверка комнат и гостей
-  var validationRoom = function () {
+  var validateRooms = function () {
     if (roomNumber.value === '1' && capacity.value !== '1') {
       roomNumber.setCustomValidity('Одна комната только для одного гостя');
     } else if (roomNumber.value === '2' && capacity.value !== '1' && capacity.value !== '2') {
@@ -70,7 +70,7 @@
   };
 
   window.submitHandler = function () {
-    validationRoom();
+    validateRooms();
     window.typeInputChangeHandler();
   };
 
@@ -89,7 +89,7 @@
   };
 
   // подключить обработчики для валидации
-  window.validation = function () {
+  window.validate = function () {
     window.submit.addEventListener('click', window.submitHandler);
     window.type.addEventListener('change', window.typeInputChangeHandler);
     window.timeout.addEventListener('change', timeoutChangeHandler);
