@@ -26,9 +26,6 @@
   window.setAddress();
 
   mapPin.addEventListener('mousedown', function (evt) {
-    if (evt.target.tagName.toLowerCase() !== 'img') {
-      return;
-    }
     if (document.querySelector('.map--faded')) {
       window.activatePage();
     }
@@ -66,8 +63,8 @@
       }
 
       startCoords = {
-        x: testX + map.getBoundingClientRect().x,
-        y: testY + map.getBoundingClientRect().y
+        x: testX + map.getBoundingClientRect().left,
+        y: testY + map.getBoundingClientRect().top
       };
       mapPin.style.top = testY + 'px';
       mapPin.style.left = testX + 'px';
