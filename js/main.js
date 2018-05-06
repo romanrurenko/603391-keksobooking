@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  // удалить класс у блока
+
   var deleteClassFromBlock = function (elementSelector, removedClass) {
     var pageBlock = document.querySelector(elementSelector);
     if (pageBlock) {
@@ -9,7 +9,6 @@
     }
   };
 
-  // добавить класс блоку
   var addClassToBlock = function (elementSelector, newClass) {
     var pageBlock = document.querySelector(elementSelector);
     if (pageBlock) {

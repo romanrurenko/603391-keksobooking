@@ -16,7 +16,6 @@
   var address = document.querySelector('#address');
   window.pinStyle = mapPin.style.cssText;
 
-  // получаем адрес метки
   window.setAddress = function () {
     var pinX = mapPin.offsetLeft + PINWIDTH / 2;
     var pinY = mapPin.offsetTop + PINHEIGHT;
