@@ -26,15 +26,13 @@
   window.setAddress();
 
   mapPin.addEventListener('mousedown', function (evt) {
-    if (evt.target.tagName.toLowerCase() !== 'img') {
-      return;
-    }
     if (document.querySelector('.map--faded')) {
       window.activatePage();
     }
     evt.preventDefault();
     var xInPin = evt.offsetX;
     var yInPin = evt.offsetY;
+
     var startCoords = {
       x: evt.clientX - xInPin,
       y: evt.clientY - yInPin
@@ -49,6 +47,7 @@
 
       shift.y = startCoords.y - moveEvt.clientY;
       var testY = mapPin.offsetTop - shift.y - yInPin;
+
       if (testY < minYPinPosition) {
         testY = minYPinPosition;
       }
@@ -66,8 +65,8 @@
       }
 
       startCoords = {
-        x: testX + map.getBoundingClientRect().x,
-        y: testY + map.getBoundingClientRect().y
+        x: testX + map.getBoundingClientRect().left,
+        y: testY + map.getBoundingClientRect().top
       };
       mapPin.style.top = testY + 'px';
       mapPin.style.left = testX + 'px';
