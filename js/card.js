@@ -43,7 +43,7 @@
     var popupTemplate = window.templateContainer.querySelector('.popup').cloneNode(true);
     fragment.appendChild(popupTemplate);
 
-    var element = window.filtredAd[advertNumber];
+    var element = window.filtringAd[advertNumber];
 
     fragment.querySelector('.popup__avatar').src = element.author.avatar;
     fragment.querySelector('.popup__title').textContent = element.offer.title;

@@ -45,6 +45,7 @@
 
   window.activateFilters = function () {
     deleteAttributeAll('.map__filter', 'disabled');
+    deleteAttributeAll('.map__checkbox', 'disabled');
   };
 
   var deactivateFilters = function () {
@@ -72,7 +73,6 @@
 
   // начало
   setAttributeAll('fieldset', 'disabled');
-
   window.mapPin = document.querySelector('.map__pin--main');
   window.type = document.querySelector('#type');
   window.timein = document.querySelector('#timein');

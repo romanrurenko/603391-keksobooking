@@ -32,6 +32,7 @@
     evt.preventDefault();
     var xInPin = evt.offsetX;
     var yInPin = evt.offsetY;
+
     var startCoords = {
       x: evt.clientX - xInPin,
       y: evt.clientY - yInPin
@@ -46,6 +47,7 @@
 
       shift.y = startCoords.y - moveEvt.clientY;
       var testY = mapPin.offsetTop - shift.y - yInPin;
+
       if (testY < minYPinPosition) {
         testY = minYPinPosition;
       }
