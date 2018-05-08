@@ -1,58 +1,24 @@
 'use strict';
 
 (function () {
-  var advertTypePrice = {
+  var AdvertTypePrice = {
     bungalo: 0,
     flat: 1000,
     house: 5000,
     palace: 10000
   };
-  var featureWifi = document.querySelector('#feature-wifi');
-  var featureDishwasher = document.querySelector('#feature-dishwasher');
-  var featureParking = document.querySelector('#feature-parking');
-  var featureWasher = document.querySelector('#feature-washer');
-  var featureElevator = document.querySelector('#feature-elevator');
-  var featureConditioner = document.querySelector('#feature-conditioner');
+
+  var submit = document.querySelector('.ad-form');
+  var type = document.querySelector('#type');
   var roomNumber = document.querySelector('#room_number');
   var capacity = document.querySelector('#capacity');
-  var description = document.querySelector('#description');
-  var title = document.querySelector('#title');
   var price = document.querySelector('#price');
+  var photoContainer = document.querySelector('.ad-form__photo');
+  var timein = document.querySelector('#timein');
+  var timeout = document.querySelector('#timeout');
+  var formReset = document.querySelector('.ad-form__reset');
+  var formBlock = document.querySelector('.ad-form');
 
-  var formResetClickHandler = function () {
-    window.deactivatePage();
-  };
-
-  var timeinChangeHandler = function () {
-    if (window.timein.value !== window.timeout.value) {
-      window.timeout.value = window.timein.value;
-    }
-  };
-
-  var timeoutChangeHandler = function () {
-    if (window.timein.value !== window.timeout.value) {
-      window.timein.value = window.timeout.value;
-    }
-  };
-
-  window.clearForm = function () {
-    featureWifi.checked = false;
-    featureDishwasher.checked = false;
-    featureParking.checked = false;
-    featureWasher.checked = false;
-    featureElevator.checked = false;
-    featureConditioner.checked = false;
-    price.value = '';
-    description.value = '';
-    title.value = '';
-    window.mapPin.style.cssText = window.pinStyle;
-    window.setAddress();
-    var container = document.querySelector('.ad-form__photo');
-    while (container.firstChild) {
-      container.removeChild(container.firstChild);
-    }
-    document.querySelector('.ad-form-header__preview img').src = 'img/muffin-grey.svg';
-  };
 
   // проверка комнат и гостей
   var validateRoom = function () {
@@ -69,33 +35,70 @@
     }
   };
 
-  window.submitHandler = function () {
-    validateRoom();
-    window.typeInputChangeHandler();
+  var clearPhotos = function () {
+    while (photoContainer.firstChild) {
+      photoContainer.removeChild(photoContainer.firstChild);
+    }
   };
 
-  window.form = document.querySelector('.ad-form');
-  window.form.addEventListener('submit', function (evt) {
-    window.backend.save(new FormData(window.form), window.sendSuccess, window.showSendError);
-    evt.preventDefault();
-  });
-
-  // проверка типа объекта и цены
-  window.typeInputChangeHandler = function () {
-    var min = 0;
-    min = advertTypePrice[window.type.value];
+  var typeInputChangeHandler = function () {
+    var min = (AdvertTypePrice[type.value]) ? AdvertTypePrice[type.value] : 0;
     price.placeholder = 'От ' + min;
     price.setAttribute('min', min);
   };
 
-  // подключить обработчики для валидации
-  window.validate = function () {
-    window.submit.addEventListener('click', window.submitHandler);
-    window.type.addEventListener('change', window.typeInputChangeHandler);
-    window.timeout.addEventListener('change', timeoutChangeHandler);
-    window.timein.addEventListener('change', timeinChangeHandler);
-    window.destinationNode = document.querySelector('.map');
-    window.destinationNode.addEventListener('click', window.buttonClickHandler);
-    window.formReset.addEventListener('click', formResetClickHandler);
-  };
+  formBlock.addEventListener('submit', function (evt) {
+    window.backend.save(new FormData(formBlock), window.backend.sendSuccess, window.backend.showSendError);
+    evt.preventDefault();
+  });
+
+
+  window.form = {
+    removeFormEvents: function () {
+      submit.removeEventListener('click', window.form.submitHandler);
+      type.removeEventListener('change', typeInputChangeHandler);
+      timeout.removeEventListener('change', window.form.timeoutChangeHandler);
+      timein.removeEventListener('change', window.form.timeinChangeHandler);
+      formReset.removeEventListener('click', window.form.formResetClickHandler);
+      formBlock.removeEventListener('click', window.form.formResetClickHandler);
+    },
+
+    clearForm: function () {
+      clearPhotos();
+      document.querySelector('.map__filters').reset();
+      document.querySelector('.ad-form').reset();
+      document.querySelector('.ad-form-header__preview img').src = 'img/muffin-grey.svg';
+      window.dragndrop.setStartPinStyle();
+    },
+
+    submitHandler: function () {
+      validateRoom();
+      typeInputChangeHandler();
+    },
+
+
+    timeinChangeHandler: function () {
+      if (timein.value !== timeout.value) {
+        timeout.value = timein.value;
+      }
+    },
+
+    timeoutChangeHandler: function () {
+      if (timein.value !== timeout.value) {
+        timein.value = timeout.value;
+      }
+    },
+
+    formResetClickHandler: function () {
+      window.main.deactivatePage();
+    },
+
+    addHandlers: function () {
+      typeInputChangeHandler();
+      submit.addEventListener('click', window.form.submitHandler);
+      type.addEventListener('change', typeInputChangeHandler);
+      timeout.addEventListener('change', window.form.timeoutChangeHandler);
+      timein.addEventListener('change', window.form.timeinChangeHandler);
+      formReset.addEventListener('click', window.form.formResetClickHandler);
+    }};
 })();

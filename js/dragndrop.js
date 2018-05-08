@@ -7,26 +7,34 @@
   var MIN_X = 0;
   var MAX_Y = 500;
   var MAX_X = 1200;
-  var minYPinPosition = MIN_Y - PINHEIGHT;
-  var maxYPinPosition = MAX_Y - PINHEIGHT;
-  var minXPinPosition = MIN_X;
-  var maxXPinPosition = MAX_X - PINWIDTH;
+  var MIN_Y_PIN_POSITION = MIN_Y - PINHEIGHT;
+  var MAX_Y_PIN_POSITION = MAX_Y - PINHEIGHT;
+  var MIN_X_PIN_POSITION = MIN_X;
+  var MAX_X_PIN_POSITION = MAX_X - PINWIDTH;
   var map = document.querySelector('.map');
   var mapPin = document.querySelector('.map__pin--main');
   var address = document.querySelector('#address');
-  window.pinStyle = mapPin.style.cssText;
 
-  window.setAddress = function () {
-    var pinX = mapPin.offsetLeft + PINWIDTH / 2;
-    var pinY = mapPin.offsetTop + PINHEIGHT;
-    address.setAttribute('value', pinX + ', ' + pinY);
+
+  // получаем адрес метки
+  window.dragndrop = {
+    setAddress: function () {
+      var pinX = mapPin.offsetLeft + PINWIDTH / 2;
+      var pinY = mapPin.offsetTop + PINHEIGHT;
+      address.setAttribute('value', pinX + ', ' + pinY);
+    },
+    PinStyle: mapPin.style.cssText,
+    setStartPinStyle: function () {
+      mapPin.style.cssText = this.PinStyle;
+      this.setAddress();
+    }
   };
 
-  window.setAddress();
+  window.dragndrop.setAddress();
 
   mapPin.addEventListener('mousedown', function (evt) {
     if (document.querySelector('.map--faded')) {
-      window.activatePage();
+      window.main.activatePage();
     }
     evt.preventDefault();
     var xInPin = evt.offsetX;
@@ -47,20 +55,20 @@
       shift.y = startCoords.y - moveEvt.clientY;
       var testY = mapPin.offsetTop - shift.y - yInPin;
 
-      if (testY < minYPinPosition) {
-        testY = minYPinPosition;
+      if (testY < MIN_Y_PIN_POSITION) {
+        testY = MIN_Y_PIN_POSITION;
       }
-      if (testY > maxYPinPosition) {
-        testY = maxYPinPosition;
+      if (testY > MAX_Y_PIN_POSITION) {
+        testY = MAX_Y_PIN_POSITION;
       }
 
       shift.x = startCoords.x - moveEvt.clientX;
       var testX = mapPin.offsetLeft - shift.x - xInPin;
-      if (testX < minXPinPosition) {
-        testX = minXPinPosition;
+      if (testX < MIN_X_PIN_POSITION) {
+        testX = MIN_X_PIN_POSITION;
       }
-      if (testX > maxXPinPosition) {
-        testX = maxXPinPosition;
+      if (testX > MAX_X_PIN_POSITION) {
+        testX = MAX_X_PIN_POSITION;
       }
 
       startCoords = {
@@ -69,7 +77,7 @@
       };
       mapPin.style.top = testY + 'px';
       mapPin.style.left = testX + 'px';
-      window.setAddress();
+      window.dragndrop.setAddress();
     };
 
     var onMouseUp = function (upEvt) {

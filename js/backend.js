@@ -10,8 +10,28 @@
     500: '500 Внутряняя ошибка сервера'
   };
 
-  window.succesMsg = document.querySelector('.success');
-  window.errorMsg = document.querySelector('.message');
+  var succesMsg = document.querySelector('.success');
+  var errorMsg = document.querySelector('.message');
+
+  var hideAndRefresh = function () {
+    errorMsg.classList.add('hidden');
+    window.main.deactivatePage();
+  };
+
+  var succesAndRefresh = function () {
+    succesMsg.classList.add('hidden');
+    window.main.deactivatePage();
+  };
+
+  var showErrorMessage = function () {
+    errorMsg.classList.add('hidden');
+  };
+
+  var errorMessage = function (status, statusText) {
+    var knownError = errorCodeToName[status];
+    var unknownError = 'Cтатус ответа: ' + status + ' ' + statusText;
+    return (knownError) ? knownError : unknownError;
+  };
 
   window.backend = {
     load: function (onSuccess, onError) {
@@ -37,6 +57,7 @@
       xhr.open('GET', LOAD_URL);
       xhr.send();
     },
+
     save: function (data, onSuccess, onError) {
       var xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
@@ -61,43 +82,25 @@
       var SEND_URL = 'https://js.dump.academy/keksobooking';
       xhr.open('POST', SEND_URL);
       xhr.send(data);
+    },
+
+    showLoadError: function (errorLoadMessage) {
+      errorMsg.textContent = errorLoadMessage;
+      errorMsg.classList.remove('hidden');
+      setTimeout(hideAndRefresh, SEVEN_SECONDS);
+    },
+
+    sendSuccess: function () {
+      succesMsg.classList.remove('hidden');
+      setTimeout(succesAndRefresh, SEVEN_SECONDS);
+    },
+
+    showSendError: function (errorSendMessage) {
+      errorMsg.textContent = errorSendMessage;
+      errorMsg.classList.remove('hidden');
+      setTimeout(showErrorMessage, SEVEN_SECONDS);
     }
   };
-  var hideAndRefresh = function () {
-    window.errorMsg.classList.add('hidden');
-    window.deactivatePage();
-  };
 
-  window.showLoadError = function (errorMessage) {
-    window.errorMsg.textContent = errorMessage;
-    window.errorMsg.classList.remove('hidden');
-    setTimeout(hideAndRefresh, SEVEN_SECONDS);
-  };
-
-  window.sendSuccess = function () {
-    window.succesMsg.classList.remove('hidden');
-    setTimeout(succesAndRefresh, SEVEN_SECONDS);
-  };
-
-  var succesAndRefresh = function () {
-    window.succesMsg.classList.add('hidden');
-    window.deactivatePage();
-  };
-
-  var showErrorMessage = function () {
-    window.errorMsg.classList.add('hidden');
-  };
-
-  window.showSendError = function (errorMessage) {
-    window.errorMsg.textContent = errorMessage;
-    window.errorMsg.classList.remove('hidden');
-    setTimeout(showErrorMessage, SEVEN_SECONDS);
-  };
-
-  var errorMessage = function (status, statusText) {
-    var knownError = errorCodeToName[status];
-    var unknownError = 'Cтатус ответа: ' + status + ' ' + statusText;
-    return (knownError) ? knownError : unknownError;
-  };
 
 })();

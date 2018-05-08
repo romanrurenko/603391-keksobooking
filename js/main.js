@@ -1,11 +1,10 @@
 'use strict';
 
 (function () {
-
-  var deleteClassFromBlock = function (elementSelector, removedClass) {
+  var deleteClassFromBlock = function (elementSelector, currentClass) {
     var pageBlock = document.querySelector(elementSelector);
     if (pageBlock) {
-      pageBlock.classList.remove(removedClass);
+      pageBlock.classList.remove(currentClass);
     }
   };
 
@@ -16,35 +15,18 @@
     }
   };
 
-  // установить атрибут всем элементам блока
   var setAttributeAll = function (nodeSelector, newAttribute) {
     var elements = document.querySelectorAll(nodeSelector);
-    for (var i = 0; i < elements.length; i++) {
-      elements[i].setAttribute(newAttribute, '');
-    }
+    elements.forEach(function (item) {
+      item.setAttribute(newAttribute, '');
+    });
   };
 
-  // убрать атрибут у всех элементов блока
   var deleteAttributeAll = function (nodeSelector, selectedAttribute) {
     var elements = document.querySelectorAll(nodeSelector);
-    for (var i = 0; i < elements.length; i++) {
-      elements[i].removeAttribute(selectedAttribute);
-    }
-  };
-
-  // переводим страницу в активное состояние
-  window.activatePage = function () {
-    deleteClassFromBlock('.map', 'map--faded');
-    deleteClassFromBlock('.ad-form', 'ad-form--disabled');
-    deleteAttributeAll('fieldset', 'disabled');
-    window.backend.load(window.onLoadSuccess, window.showLoadError);
-    window.validate();
-    window.typeInputChangeHandler();
-  };
-
-  window.activateFilters = function () {
-    deleteAttributeAll('.map__filter', 'disabled');
-    deleteAttributeAll('.map__checkbox', 'disabled');
+    elements.forEach(function (item) {
+      item.removeAttribute(selectedAttribute);
+    });
   };
 
   var deactivateFilters = function () {
@@ -52,33 +34,30 @@
     setAttributeAll('.map__checkbox', 'disabled');
   };
 
-
-  window.deactivatePage = function () {
-    window.submit.removeEventListener('click', window.submitHandler);
-    window.type.removeEventListener('change', window.typeInputChangeHandler);
-    window.timeout.removeEventListener('change', window.timeoutChangeHandler);
-    window.timein.removeEventListener('change', window.timeinChangeHandler);
-    window.destinationNode.addEventListener('click', window.buttonClickHandler);
-    window.formReset.removeEventListener('click', window.formResetClickHandler);
-    window.form.removeEventListener('click', window.formResetClickHandler);
-    setAttributeAll('fieldset', 'disabled');
-    addClassToBlock('.map', 'map--faded');
-    addClassToBlock('.ad-form', 'ad-form--disabled');
-    window.deletePopup();
-    window.clearForm();
-    window.deletePins();
-    deactivateFilters();
-  };
+  window.main = {
+    activatePage: function () {
+      deleteClassFromBlock('.map', 'map--faded');
+      deleteClassFromBlock('.ad-form', 'ad-form--disabled');
+      deleteAttributeAll('fieldset', 'disabled');
+      window.backend.load(window.pin.onLoadSuccess, window.backend.showLoadError);
+      window.form.addHandlers();
+      window.pin.addPinsEvents();
+    },
+    activateFilters: function () {
+      deleteAttributeAll('.map__filter', 'disabled');
+      deleteAttributeAll('.map__checkbox', 'disabled');
+    },
+    deactivatePage: function () {
+      window.form.removeFormEvents();
+      setAttributeAll('fieldset', 'disabled');
+      addClassToBlock('.map', 'map--faded');
+      addClassToBlock('.ad-form', 'ad-form--disabled');
+      window.card.deletePopup();
+      window.form.clearForm();
+      window.pin.deletePins();
+      deactivateFilters();
+    }};
 
   // начало
   setAttributeAll('fieldset', 'disabled');
-  window.mapPin = document.querySelector('.map__pin--main');
-  window.type = document.querySelector('#type');
-  window.timein = document.querySelector('#timein');
-  window.timeout = document.querySelector('#timeout');
-  window.formReset = document.querySelector('.ad-form__reset');
-  window.destinationNode = document.querySelector('.map');
-  window.submit = document.querySelector('.ad-form');
-  window.templateContainer = document.querySelector('template').content;
-  deactivateFilters();
 })();

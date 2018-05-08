@@ -11,18 +11,15 @@
   avatarChooser.addEventListener('change', function () {
     var file = avatarChooser.files[0];
     var fileName = file.name.toLowerCase();
-
-    var matches = FILE_TYPES.some(function (it) {
-      return fileName.endsWith(it);
+    var matches = FILE_TYPES.some(function (item) {
+      return fileName.endsWith(item);
     });
 
     if (matches) {
       var reader = new FileReader();
-
       reader.addEventListener('load', function () {
         imagePreview.src = reader.result;
       });
-
       reader.readAsDataURL(file);
     }
   });
@@ -41,15 +38,15 @@
   };
 
   photoChooser.addEventListener('change', function () {
-    var photoPreview = document.querySelectorAll('.ad-form__photo  img');
+    var photoPreview = document.querySelectorAll('.ad-form__photo img');
     var photoCount = (photoPreview.length);
     if (photoCount !== null && photoCount < MAX_PHOTOS) {
 
       var photofile = photoChooser.files[0];
       var fileName = photofile.name.toLowerCase();
 
-      var matches = FILE_TYPES.some(function (it) {
-        return fileName.endsWith(it);
+      var matches = FILE_TYPES.some(function (item) {
+        return fileName.endsWith(item);
       });
 
       if (matches) {

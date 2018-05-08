@@ -24,7 +24,6 @@
 
   photosNode.addEventListener('dragstart', function (evt) {
     draggedItem = evt.target;
-
     evt.dataTransfer.effectAllowed = 'move';
     evt.dataTransfer.setData('text/plain', draggedItem.alt);
 

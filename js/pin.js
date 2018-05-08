@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-
+  var MAX_PINS = 5;
   var priceLevel = {
     any: {
       min: 0,
@@ -25,36 +25,10 @@
   var housingPrice = document.querySelector('#housing-price');
   var housingRooms = document.querySelector('#housing-rooms');
   var housingGuests = document.querySelector('#housing-guests');
-
   var templateContainer = document.querySelector('template').content;
+  var destinationNode = document.querySelector('.map');
 
-  // удаляем пины
-  window.deletePins = function () {
-    var elements = document.querySelectorAll('.map button');
-    for (var i = 0; i < elements.length; i++) {
-      if (!elements[i].classList.contains('map__pin--main')) {
-        elements[i].remove();
-      }
-    }
-  };
 
-  window.onLoadSuccess = function (loadArray) {
-    window.adverts = loadArray.slice();
-    window.activateFilters();
-    updatePins();
-  };
-
-  // выводим пины на карту
-  window.renderPins = function () {
-    var fragment = document.createDocumentFragment();
-    var countPins = (window.filtringAd.length > 5) ? 5 : window.filtringAd.length;
-    for (var i = 0; i < countPins; i++) {
-      fragment.appendChild(generatePin(i, window.filtringAd[i]));
-    }
-    window.destinationNode.appendChild(fragment);
-  };
-
-  // вносим Pin-ы в шаблон
   var generatePin = function (i, element) {
     var templeteElement = templateContainer.querySelector('.map__pin').cloneNode(true);
     var pinImage = templeteElement.querySelector('.map__pin img');
@@ -70,36 +44,52 @@
     return templeteElement;
   };
 
-  var featuresCheck = function (item) {
-    window.filtringAd = window.filtringAd.filter(function (selectValue) {
+  var checkFeatures = function (item) {
+    window.filtredAdverts = window.filtredAdverts.filter(function (selectValue) {
       var isChecked = item.checked;
       var isRequired = selectValue.offer.features.indexOf(item.value) > -1;
       return (!isChecked || isRequired);
     });
   };
 
-  window.applyFilter = function () {
+  var updatePins = function () {
+    window.filtredAdverts = window.adverts.slice();
+    window.card.deletePopup();
+    window.pin.deletePins();
+    applyFilter();
+  };
 
-    window.filtringAd = window.filtringAd.filter(function (selectValue) {
+  var renderPins = function () {
+    var fragment = document.createDocumentFragment();
+    var countPins = (window.filtredAdverts.length > MAX_PINS) ? MAX_PINS : window.filtredAdverts.length;
+    var pins = window.filtredAdverts.slice(0, countPins);
+    pins.forEach(function (item, i) {
+      fragment.appendChild(generatePin(i, item));
+    });
+    destinationNode.appendChild(fragment);
+  };
+
+  var applyFilter = function () {
+    window.filtredAdverts = window.filtredAdverts.filter(function (selectValue) {
       var isAny = housingType.value === 'any';
       var isRequired = housingType.value === String(selectValue.offer.type);
       return (isAny || isRequired);
     });
 
-    window.filtringAd = window.filtringAd.filter(function (selectValue) {
+    window.filtredAdverts = window.filtredAdverts.filter(function (selectValue) {
       var isAny = housingPrice.value === 'any';
       var minValue = (selectValue.offer.price >= priceLevel[housingPrice.value].min);
       var maxValue = (selectValue.offer.price < priceLevel[housingPrice.value].max);
       return isAny || (minValue && maxValue);
     });
 
-    window.filtringAd = window.filtringAd.filter(function (selectValue) {
+    window.filtredAdverts = window.filtredAdverts.filter(function (selectValue) {
       var isAny = housingRooms.value === 'any';
       var isRequired = housingRooms.value === String(selectValue.offer.rooms);
       return (isAny || isRequired);
     });
 
-    window.filtringAd = window.filtringAd.filter(function (selectValue) {
+    window.filtredAdverts = window.filtredAdverts.filter(function (selectValue) {
       var isAny = housingGuests.value === 'any';
       var isRequired = housingGuests.value === String(selectValue.offer.guests);
       return (isAny || isRequired);
@@ -109,20 +99,34 @@
     var mapFeatures = document.querySelector('.map__features');
     var inputFeatures = mapFeatures.querySelectorAll('input');
     inputFeatures.forEach(function (item) {
-      featuresCheck(item);
+      checkFeatures(item);
     });
-    window.renderPins(window.filtringAd);
+    renderPins(window.filtredAdverts);
   };
 
-  var updatePins = function () {
-    window.filtringAd = window.adverts.slice();
-    window.deletePopup();
-    window.deletePins();
-    window.applyFilter();
-  };
+  window.pin = {
+    // удаляем пины
+    deletePins: function () {
+      var elements = document.querySelectorAll('.map button');
+      elements.forEach(function (item) {
+        if (!item.classList.contains('map__pin--main')) {
+          item.remove();
+        }
+      });
+    },
+    addPinsEvents: function () {
+      destinationNode.addEventListener('click', window.card.buttonClickHandler);
+    },
 
-  var mapFilter = document.querySelector('.map__filters');
-  mapFilter.addEventListener('change', function () {
+    onLoadSuccess: function (loadArray) {
+      window.adverts = loadArray.slice();
+      window.main.activateFilters();
+      updatePins();
+    }};
+
+  var mapFilters = document.querySelector('.map__filters');
+  mapFilters.addEventListener('change', function () {
     window.debounce(updatePins);
   });
+
 })();
